@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Кедровый магнат — Сибирский кедр</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at 50% 30%, #2d5a3d 0%, #1a3a2a 40%, #0f1f15 100%);
+    color: #fff;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    user-select: none;
+    position: relative;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .logo { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 20px 4px; flex-shrink: 0; z-index: 10; position: relative; }
+  .logo-icon { width: 38px; height: 38px; flex-shrink: 0; filter: drop-shadow(0 2px 6px rgba(74,222,128,0.4)); }
+  .logo-text { display: flex; flex-direction: column; line-height: 1; }
+  .logo-title { font-size: 17px; font-weight: 800; color: #d1fae5; letter-spacing: 0.5px; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+  .logo-sub { font-size: 9px; font-weight: 600; color: #86efac; letter-spacing: 3px; text-transform: uppercase; margin-top: 2px; opacity: 0.85; }
+
+  .reset-icon-btn { position: absolute; right: 16px; top: 14px; width: 38px; height: 38px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #fca5a5; border-radius: 50%; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 20; padding: 0; line-height: 1; }
+  .reset-icon-btn:active { background: rgba(239, 68, 68, 0.35); transform: scale(0.9); }
+
+  .sound-icon-btn { position: absolute; left: 16px; top: 14px; width: 38px; height: 38px; background: rgba(74, 222, 128, 0.15); border: 1px solid rgba(74, 222, 128, 0.35); color: #86efac; border-radius: 50%; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 20; padding: 0; line-height: 1; }
+  .sound-icon-btn:active { background: rgba(74, 222, 128, 0.35); transform: scale(0.9); }
+  .sound-icon-btn.muted { background: rgba(120, 120, 120, 0.15); border-color: rgba(120, 120, 120, 0.35); color: #999; }
+
+  .top { width: 100%; padding: 6px 20px 8px; text-align: center; z-index: 10; flex-shrink: 0; }
+  .level-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px; }
+  .level-icon { font-size: 20px; }
+  .level-name { font-size: 14px; font-weight: 700; color: #a7f3d0; letter-spacing: 0.5px; }
+  .level-bar { width: 80%; max-width: 320px; height: 6px; background: rgba(255,255,255,0.12); border-radius: 6px; margin: 0 auto 8px; overflow: hidden; }
+  .level-fill { height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); border-radius: 6px; transition: width 0.3s; }
+  .level-progress { font-size: 11px; opacity: 0.55; margin-bottom: 6px; }
+
+  .score { font-size: 38px; font-weight: 800; color: #ffd166; text-shadow: 0 2px 15px rgba(255,209,102,0.5); letter-spacing: -0.5px; line-height: 1; word-break: break-all; }
+  .score-label { font-size: 12px; opacity: 0.6; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 2px; }
+  .per-tap { font-size: 12px; opacity: 0.55; margin-top: 4px; }
+
+  .energy-bar { width: 80%; max-width: 320px; height: 8px; background: rgba(255,255,255,0.12); border-radius: 8px; margin: 10px auto 0; overflow: hidden; }
+  .energy-fill { height: 100%; background: linear-gradient(90deg, #4ade80, #22c55e); border-radius: 8px; transition: width 0.2s; box-shadow: 0 0 10px rgba(74,222,128,0.6); }
+  .energy-text { font-size: 11px; opacity: 0.55; margin-top: 4px; }
+
+  .cone-area { flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; position: relative; width: 100%; flex-direction: column; }
+  .cone-wrap { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  
+  .cone { width: 240px; height: 340px; max-width: 80vw; max-height: 55vh; cursor: pointer; animation: float 3.5s ease-in-out infinite; position: relative; z-index: 5; transition: transform 0.08s; }
+  .cone:active { transform: scale(0.92); }
+  @keyframes float { 0%, 100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(-18px) rotate(1.5deg); } }
+  .cone svg { width: 100%; height: 100%; display: block; overflow: visible; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4)); }
+
+  .cone-shadow { width: 140px; height: 16px; background: radial-gradient(ellipse at center, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 80%); border-radius: 50%; margin-top: -8px; animation: shadowPulse 3.5s ease-in-out infinite; pointer-events: none; }
+  @keyframes shadowPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.7); opacity: 0.5; } }
+
+  .nut { position: fixed; width: 40px; height: 50px; pointer-events: none; z-index: 50; will-change: transform, opacity; margin-left: -20px; margin-top: -25px; }
+  .nut svg { width: 100%; height: 100%; display: block; }
+
+  .penalty-text { position: fixed; font-size: 26px; font-weight: 900; color: #ef4444; text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 15px rgba(239,68,68,0.6); pointer-events: none; z-index: 60; }
+
+  .star { position: fixed; font-size: 30px; pointer-events: none; z-index: 150; will-change: transform, opacity; text-shadow: 0 0 10px rgba(251,191,36,0.8), 0 0 20px rgba(251,191,36,0.4); }
+
+  .bug { position: fixed; font-size: 60px; cursor: pointer; z-index: 999; filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.9)) drop-shadow(0 5px 10px rgba(0,0,0,0.8)); animation: bugSpawn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); user-select: none; transition: left 0.6s linear, top 0.6s linear; }
+  .bug:active { transform: scale(0.8); }
+  @keyframes bugSpawn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+  .bottom { width: 100%; max-width: 400px; padding: 10px 20px 16px; display: flex; gap: 10px; z-index: 10; flex-shrink: 0; }
+  .btn { flex: 1; padding: 14px; border: none; border-radius: 14px; font-size: 15px; font-weight: 700; cursor: pointer; transition: transform 0.1s; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+  .btn:active { transform: scale(0.95); }
+  .btn-shop { background: linear-gradient(135deg, #f59e0b, #d97706); }
+  .btn-boost { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+  .btn-rules { flex: 0 0 52px; background: rgba(56, 189, 248, 0.2); border: 1px solid rgba(56, 189, 248, 0.4); font-size: 18px; color: #7dd3fc; }
+  .btn-rules:active { background: rgba(56, 189, 248, 0.4); }
+  .btn:disabled { opacity: 0.4; }
+
+  .shop { position: fixed; inset: 0; background: rgba(0,0,0,0.92); backdrop-filter: blur(8px); display: none; flex-direction: column; padding: 20px; z-index: 100; overflow-y: auto; }
+  .shop.open { display: flex; }
+  .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .shop-title { font-size: 22px; font-weight: 800; }
+  .close-btn { background: rgba(255,255,255,0.15); border: none; color: #fff; font-size: 22px; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; }
+  .collection-info { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); border-radius: 12px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px; color: #fcd34d; text-align: center; }
+  .item { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; transition: all 0.2s; }
+  .item.maxed { border-color: rgba(251,191,36,0.4); background: rgba(251,191,36,0.06); }
+  .item-icon { font-size: 32px; }
+  .item-info { flex: 1; }
+  .item-name { font-weight: 700; font-size: 15px; }
+  .item-effect { font-size: 12px; opacity: 0.6; margin-top: 2px; }
+  .item-level { font-size: 11px; color: #fbbf24; font-weight: 700; margin-top: 3px; }
+  .item-buy { background: linear-gradient(135deg, #22c55e, #16a34a); border: none; color: #fff; padding: 9px 14px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; min-width: 80px; }
+  .item-buy:disabled { background: #444; opacity: 0.5; cursor: not-allowed; }
+  .item-buy.maxed { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1a1a1a; }
+
+  .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.15); padding: 12px 24px; border-radius: 12px; font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 200; pointer-events: none; max-width: 90%; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .victory { position: fixed; inset: 0; background: radial-gradient(circle at 50% 40%, #4a3818 0%, #1a1207 70%); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 30px; z-index: 300; text-align: center; animation: fadeIn 0.6s; }
+  .victory.open { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .victory-crown { font-size: 100px; animation: crownPulse 2s ease-in-out infinite; filter: drop-shadow(0 0 30px rgba(251,191,36,0.8)); }
+  @keyframes crownPulse { 0%, 100% { transform: scale(1) rotate(-3deg); } 50% { transform: scale(1.1) rotate(3deg); } }
+  .victory-title { font-size: 32px; font-weight: 800; color: #fbbf24; margin: 20px 0 10px; text-shadow: 0 0 30px rgba(251,191,36,0.5); }
+  .victory-text { font-size: 16px; opacity: 0.85; line-height: 1.5; margin-bottom: 20px; max-width: 320px; }
+  .victory-stats { background: rgba(255,255,255,0.08); border-radius: 16px; padding: 16px 24px; margin-bottom: 20px; font-size: 14px; }
+  .victory-stats div { margin: 6px 0; }
+  .victory-stats b { color: #fbbf24; }
+  
+  .promo-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .promo-code {
+    background: rgba(251, 191, 36, 0.15);
+    border: 2px dashed #fbbf24;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 24px;
+    font-weight: 900;
+    color: #fbbf24;
+    text-align: center;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    box-shadow: 0 0 20px rgba(251,191,36,0.2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .promo-code:active {
+    transform: scale(0.95);
+    background: rgba(251, 191, 36, 0.25);
+  }
+  .promo-hint {
+    font-size: 12px;
+    color: #a7f3d0;
+    text-align: center;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+
+  .victory-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b); border: none; color: #1a1a1a; font-size: 17px; font-weight: 800; padding: 16px 40px; border-radius: 16px; cursor: pointer; box-shadow: 0 6px 20px rgba(251,191,36,0.4); }
+  .victory-btn:active { transform: scale(0.95); }
+
+  .rules-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; z-index: 400; padding: 20px; }
+  .rules-modal.open { display: flex; }
+  .rules-content { background: #1a2e20; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 24px; max-width: 400px; width: 100%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.6); position: relative; }
+  .rules-title { font-size: 22px; font-weight: 800; color: #ffd166; margin-bottom: 16px; text-align: center; }
+  .rules-text { font-size: 15px; line-height: 1.5; opacity: 0.9; }
+  .rules-text p { margin-bottom: 12px; }
+  .rules-text b { color: #a7f3d0; }
+  .rules-close { position: absolute; right: 16px; top: 16px; background: rgba(255,255,255,0.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  @media (max-height: 750px) {
+    .cone { width: 210px; height: 290px; max-height: 50vh; }
+    .cone-shadow { width: 120px; }
+    .score { font-size: 34px; }
+  }
+  @media (max-height: 650px) {
+    .cone { width: 170px; height: 240px; max-height: 45vh; }
+    .cone-shadow { width: 100px; }
+    .score { font-size: 28px; }
+    .logo-icon { width: 32px; height: 32px; }
+    .logo-title { font-size: 15px; }
+    .top { padding: 4px 20px 6px; }
+    .bottom { padding: 8px 20px 12px; }
+    .reset-icon-btn { width: 34px; height: 34px; font-size: 15px; right: 12px; top: 10px; }
+    .sound-icon-btn { width: 34px; height: 34px; font-size: 15px; left: 12px; top: 10px; }
+  }
+  @media (max-height: 550px) {
+    .cone { width: 140px; height: 190px; max-height: 40vh; }
+    .cone-shadow { width: 80px; height: 12px; }
+    .score { font-size: 24px; }
+    .logo-sub { display: none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#22c55e" stroke-width="2" stroke-linecap="round" fill="none">
+        <path d="M20 36 L20 12"/><path d="M20 30 L12 26"/><path d="M20 30 L28 26"/>
+        <path d="M20 24 L10 20"/><path d="M20 24 L30 20"/><path d="M20 18 L12 14"/><path d="M20 18 L28 14"/>
+      </g>
+      <g stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" opacity="0.9">
+        <path d="M12 26 L8 24"/><path d="M12 26 L10 30"/><path d="M28 26 L32 24"/><path d="M28 26 L30 30"/>
+        <path d="M10 20 L6 18"/><path d="M10 20 L7 23"/><path d="M30 20 L34 18"/><path d="M30 20 L33 23"/>
+      </g>
+      <ellipse cx="20" cy="10" rx="4" ry="6" fill="#8b5a2b"/>
+      <ellipse cx="20" cy="10" rx="4" ry="6" fill="none" stroke="#5c3a1e" stroke-width="0.8"/>
+      <path d="M16 8 Q20 6 24 8" stroke="#5c3a1e" stroke-width="0.6" fill="none"/>
+      <path d="M16 10 Q20 8 24 10" stroke="#5c3a1e" stroke-width="0.6" fill="none"/>
+      <path d="M16 12 Q20 10 24 12" stroke="#5c3a1e" stroke-width="0.6" fill="none"/>
+      <path d="M20 4 L20 2" stroke="#4a2f1a" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <div class="logo-text">
+      <div class="logo-title">Сибирский кедр</div>
+      <div class="logo-sub">Эко-фабрика</div>
+    </div>
+    <button class="reset-icon-btn" onclick="confirmReset()" title="Сбросить прогресс">🗑</button>
+    <button class="sound-icon-btn" id="soundBtn" onclick="toggleSound()" title="Звук">🔊</button>
+  </div>
+
+  <div class="top">
+    <div class="level-row">
+      <span class="level-icon" id="levelIcon">🌱</span>
+      <span class="level-name" id="levelName">Новичок</span>
+    </div>
+    <div class="level-bar"><div class="level-fill" id="levelFill"></div></div>
+    <div class="level-progress" id="levelProgress">0 / 1 000</div>
+
+    <div class="score-label">Орешки</div>
+    <div class="score" id="score">0</div>
+    <div class="per-tap" id="perTap">+1 за тап</div>
+
+    <div class="energy-bar"><div class="energy-fill" id="energyFill"></div></div>
+    <div class="energy-text" id="energyText">⚡ 100 / 100</div>
+  </div>
+
+  <div class="cone-area">
+    <div class="cone-wrap">
+      <div class="cone" id="cone">
+        <svg viewBox="0 0 240 320" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="coneShape">
+              <path d="M120,10 C160,10 215,120 215,220 C215,290 175,315 120,315 C65,315 25,290 25,220 C25,120 80,10 120,10 Z" />
+            </clipPath>
+            <radialGradient id="coneBase" cx="40%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#5e3218"/>
+              <stop offset="100%" stop-color="#2e1508"/>
+            </radialGradient>
+            <radialGradient id="scaleGrad" cx="35%" cy="20%" r="80%">
+              <stop offset="0%" stop-color="#b06d42"/>
+              <stop offset="60%" stop-color="#7a4625"/>
+              <stop offset="100%" stop-color="#3d1d0c"/>
+            </radialGradient>
+          </defs>
+
+          <g clip-path="url(#coneShape)">
+            <rect x="0" y="0" width="240" height="320" fill="url(#coneBase)"/>
+            <g>
+              <path d="M120,315 Q160,280 200,315 Q160,350 120,315 Q80,350 40,315 Q80,280 120,315 Z" fill="url(#scaleGrad)" transform="rotate(5 120 315)"/>
+              <path d="M70,295 Q110,260 150,295 Q110,330 70,295 Q30,330 -10,295 Q30,260 70,295 Z" fill="url(#scaleGrad)" transform="rotate(-15 70 295)"/>
+              <path d="M170,295 Q210,260 250,295 Q210,330 170,295 Q130,330 90,295 Q130,260 170,295 Z" fill="url(#scaleGrad)" transform="rotate(12 170 295)"/>
+
+              <path d="M45,260 Q85,225 125,260 Q85,295 45,260 Q5,295 -35,260 Q5,225 45,260 Z" fill="url(#scaleGrad)" transform="rotate(-8 45 260)"/>
+              <path d="M195,260 Q235,225 275,260 Q235,295 195,260 Q155,295 115,260 Q155,225 195,260 Z" fill="url(#scaleGrad)" transform="rotate(10 195 260)"/>
+              <path d="M120,260 Q160,225 200,260 Q160,295 120,260 Q80,295 40,260 Q80,225 120,260 Z" fill="url(#scaleGrad)" transform="rotate(-3 120 260)"/>
+
+              <path d="M60,225 Q100,190 140,225 Q100,260 60,225 Q20,260 -20,225 Q20,190 60,225 Z" fill="url(#scaleGrad)" transform="rotate(15 60 225)"/>
+              <path d="M180,225 Q220,190 260,225 Q220,260 180,225 Q140,260 100,225 Q140,190 180,225 Z" fill="url(#scaleGrad)" transform="rotate(-12 180 225)"/>
+              <path d="M120,225 Q155,195 190,225 Q155,255 120,225 Q85,255 50,225 Q85,195 120,225 Z" fill="url(#scaleGrad)" transform="rotate(4 120 225)"/>
+
+              <path d="M40,190 Q80,155 120,190 Q80,225 40,190 Q0,225 -40,190 Q0,155 40,190 Z" fill="url(#scaleGrad)" transform="rotate(-10 40 190)"/>
+              <path d="M200,190 Q240,155 280,190 Q240,225 200,190 Q160,225 120,190 Q160,155 200,190 Z" fill="url(#scaleGrad)" transform="rotate(7 200 190)"/>
+              <path d="M120,190 Q160,155 200,190 Q160,225 120,190 Q80,225 40,190 Q80,155 120,190 Z" fill="url(#scaleGrad)" transform="rotate(-5 120 190)"/>
+              <path d="M80,175 Q120,140 160,175 Q120,210 80,175 Q40,210 0,175 Q40,140 80,175 Z" fill="url(#scaleGrad)" transform="rotate(18 80 175)"/>
+
+              <path d="M60,155 Q100,120 140,155 Q100,190 60,155 Q20,190 -20,155 Q20,120 60,155 Z" fill="url(#scaleGrad)" transform="rotate(-15 60 155)"/>
+              <path d="M180,155 Q220,120 260,155 Q220,190 180,155 Q140,190 100,155 Q140,120 180,155 Z" fill="url(#scaleGrad)" transform="rotate(12 180 155)"/>
+              <path d="M120,155 Q155,125 190,155 Q155,185 120,155 Q85,185 50,155 Q85,125 120,155 Z" fill="url(#scaleGrad)" transform="rotate(-8 120 155)"/>
+
+              <path d="M50,120 Q90,85 130,120 Q90,155 50,120 Q10,155 -30,120 Q10,85 50,120 Z" fill="url(#scaleGrad)" transform="rotate(8 50 120)"/>
+              <path d="M190,120 Q230,85 270,120 Q230,155 190,120 Q150,155 110,120 Q150,85 190,120 Z" fill="url(#scaleGrad)" transform="rotate(-10 190 120)"/>
+              <path d="M120,120 Q160,85 200,120 Q160,155 120,120 Q80,155 40,120 Q80,85 120,120 Z" fill="url(#scaleGrad)" transform="rotate(6 120 120)"/>
+
+              <path d="M70,90 Q110,55 150,90 Q110,125 70,90 Q30,125 -10,90 Q30,55 70,90 Z" fill="url(#scaleGrad)" transform="rotate(-18 70 90)"/>
+              <path d="M170,90 Q210,55 250,90 Q210,125 170,90 Q130,125 90,90 Q130,55 170,90 Z" fill="url(#scaleGrad)" transform="rotate(15 170 90)"/>
+              <path d="M120,90 Q150,65 180,90 Q150,115 120,90 Q90,115 60,90 Q90,65 120,90 Z" fill="url(#scaleGrad)" transform="rotate(-4 120 90)"/>
+
+              <path d="M90,60 Q125,30 160,60 Q125,90 90,60 Q55,90 20,60 Q55,30 90,60 Z" fill="url(#scaleGrad)" transform="rotate(10 90 60)"/>
+              <path d="M150,60 Q185,30 220,60 Q185,90 150,60 Q115,90 80,60 Q115,30 150,60 Z" fill="url(#scaleGrad)" transform="rotate(-12 150 60)"/>
+
+              <path d="M120,35 Q145,15 170,35 Q145,55 120,35 Q95,55 70,35 Q95,15 120,35 Z" fill="url(#scaleGrad)" transform="rotate(-5 120 35)"/>
+              <path d="M80,25 Q105,5 130,25 Q105,45 80,25 Q55,45 30,25 Q55,5 80,25 Z" fill="url(#scaleGrad)" transform="rotate(20 80 25)"/>
+              <path d="M160,25 Q185,5 210,25 Q185,45 160,25 Q135,45 110,25 Q135,5 160,25 Z" fill="url(#scaleGrad)" transform="rotate(-18 160 25)"/>
+
+              <path d="M120,5 Q140,-10 160,5 Q140,20 120,5 Q100,20 80,5 Q100,-10 120,5 Z" fill="url(#scaleGrad)" transform="rotate(8 120 5)"/>
+              <path d="M100,-5 Q115,-20 130,-5 Q115,10 100,-5 Q85,10 70,-5 Q85,-20 100,-5 Z" fill="url(#scaleGrad)" transform="rotate(-10 100 -5)"/>
+              <path d="M140,-5 Q155,-20 170,-5 Q155,10 140,-5 Q125,10 110,-5 Q125,-20 140,-5 Z" fill="url(#scaleGrad)" transform="rotate(15 140 -5)"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="cone-shadow"></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <button class="btn btn-shop" onclick="openShop()">🛒 Магазин</button>
+    <button class="btn btn-boost" id="boostBtn" onclick="activateBoost()">⚡ Буст x2</button>
+    <button class="btn btn-rules" onclick="openRules()">❓</button>
+  </div>
+
+  <div class="shop" id="shop">
+    <div class="shop-header">
+      <div class="shop-title">🛒 Магазин</div>
+      <button class="close-btn" onclick="closeShop()">✕</button>
+    </div>
+    <div class="collection-info" id="collectionInfo">📦 Коллекция: 0 / 25</div>
+    <div id="shopItems"></div>
+  </div>
+
+  <div class="victory" id="victory">
+    <div class="victory-crown">👑</div>
+    <div class="victory-title">Кедровый магнат!</div>
+    <div class="victory-text">Ты собрал всю коллекцию улучшений (или достиг звания Магната) и стал легендой сибирской тайги.</div>
+    <div class="victory-stats">
+      <div>🌰 Орешков собрано: <b id="vScore">0</b></div>
+      <div>📦 Коллекция: <b id="vCollection">0 / 25</b></div>
+      <div>⏱ Время: <b id="vTime">—</b></div>
+    </div>
+    
+    <div class="promo-label">Ваш промокод</div>
+    <div class="promo-code" onclick="copyPromo()">КЕДРОВЫЙ20</div>
+    <div class="promo-hint">Нажми, чтобы скопировать</div>
+
+    <button class="victory-btn" onclick="resetGame()">Играть заново</button>
+  </div>
+
+  <div class="rules-modal" id="rulesModal">
+    <div class="rules-content">
+      <button class="rules-close" onclick="closeRules()">✕</button>
+      <div class="rules-title">📜 Правила игры</div>
+      <div class="rules-text">
+        <p><b>Цель:</b> Собирай кедровые орехи, прокачивай улучшения в магазине и стань <b>Кедровым магнатом</b>!</p>
+        <p><b>Тапы:</b> Нажимай на шишку, чтобы получать орехи. Следи за шкалой энергии — она тратится при каждом тапе.</p>
+        <p><b>Магазин:</b> Покупай перчатки, ведра и грузовики (увеличивают доход за тап), а также рощи и фабрики (дают пассивный доход). <b>Важно:</b> пассивный доход работает только 5 секунд после последнего тапа, затем плавно затухает.</p>
+        <p><b>Вредители 🐞🪰🕷️:</b> Периодически на экране появляются жук, муха или паук. Успей тапнуть по ним, чтобы получить <b>+50 орехов</b>. Если не успеешь — они украдут <b>20%</b> твоих сбережений!</p>
+        <p><b>Брак:</b> Иногда (2% шанс) вместо обычного ореха вылетает бракованный и отнимает <b>2%</b> орехов.</p>
+        <p><b>Буст ⚡:</b> Удваивает твой доход за тап на 30 секунд.</p>
+        <p><b>Победа:</b> Игра заканчивается, когда ты собираешь всю коллекцию улучшений (25/25) или достигаешь максимального звания «Кедровый магнат». В награду ты получаешь <b>промокод</b>!</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  const LEVELS = [
+    { icon: '🌱', name: 'Новичок', need: 0 },
+    { icon: '🧤', name: 'Сборщик', need: 1000 },
+    { icon: '🪣', name: 'Заготовитель', need: 10000 },
+    { icon: '🚚', name: 'Трейдер', need: 100000 },
+    { icon: '🏭', name: 'Фабрикант', need: 1000000 },
+    { icon: '👑', name: 'Кедровый магнат', need: 2000000 },
+  ];
+
+  const UPGRADES = [
+    { id: 'gloves', icon: '🧤', name: 'Перчатки', baseCost: 100, maxLevel: 5, effect: () => state.perTap += 1, desc: '+1 за тап' },
+    { id: 'bucket', icon: '🪣', name: 'Ведро', baseCost: 500, maxLevel: 5, effect: () => state.perTap += 5, desc: '+5 за тап' },
+    { id: 'truck', icon: '🚚', name: 'Грузовик', baseCost: 2000, maxLevel: 5, effect: () => state.perTap += 20, desc: '+20 за тап' },
+    { id: 'grove', icon: '🌲', name: 'Кедровая роща', baseCost: 10000, maxLevel: 5, effect: () => state.passive += 100, desc: '+100/сек' },
+    { id: 'factory', icon: '🏭', name: 'Фабрика', baseCost: 50000, maxLevel: 5, effect: () => state.passive += 500, desc: '+500/сек' },
+  ];
+  const TOTAL_ITEMS = UPGRADES.length * 5;
+
+  let audioCtx = null;
+  let soundEnabled = true;
+  
+  let bugElement = null;
+  let bugTimer = null;
+  let bugMoveTimer = null;
+
+  function initAudio() {
+    if (!audioCtx) {
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  }
+
+  function playPop() {
+    if (!audioCtx || !soundEnabled) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(380, now);
+    osc.frequency.exponentialRampToValueAtTime(780, now + 0.06);
+    osc.frequency.exponentialRampToValueAtTime(220, now + 0.14);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.35, now + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.18);
+  }
+
+  function playFail() {
+    if (!audioCtx || !soundEnabled) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(150, now);
+    osc.frequency.exponentialRampToValueAtTime(50, now + 0.15);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.2, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.22);
+  }
+
+  function playBugSound() {
+    if (!audioCtx || !soundEnabled) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(600, now);
+    osc.frequency.exponentialRampToValueAtTime(300, now + 0.1);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.15, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.18);
+  }
+
+  function playFlySound() {
+    if (!audioCtx || !soundEnabled) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.linearRampToValueAtTime(250, now + 0.1); 
+    osc.frequency.linearRampToValueAtTime(200, now + 0.2);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.1, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.22);
+  }
+
+  function playSpiderSound() {
+    if (!audioCtx || !soundEnabled) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(800, now);
+    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.05);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.15, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(now); osc.stop(now + 0.12);
+  }
+
+  function toggleSound() {
+    soundEnabled = !soundEnabled;
+    saveSoundPref();
+    const btn = document.getElementById('soundBtn');
+    if (soundEnabled) {
+      btn.textContent = '🔊';
+      btn.classList.remove('muted');
+    } else {
+      btn.textContent = '🔇';
+      btn.classList.add('muted');
+    }
+  }
+
+  function saveSoundPref() {
+    try { localStorage.setItem('kedrSound', soundEnabled ? '1' : '0'); } catch(e) {}
+  }
+  function loadSoundPref() {
+    try {
+      const v = localStorage.getItem('kedrSound');
+      if (v === '0') soundEnabled = false;
+    } catch(e) {}
+  }
+  function updateSoundBtn() {
+    const btn = document.getElementById('soundBtn');
+    if (soundEnabled) {
+      btn.textContent = '🔊';
+      btn.classList.remove('muted');
+    } else {
+      btn.textContent = '🔇';
+      btn.classList.add('muted');
+    }
+  }
+
+  function openRules() {
+    document.getElementById('rulesModal').classList.add('open');
+    initAudio();
+    if (bugElement) {
+      bugElement.style.display = 'none';
+      clearInterval(bugMoveTimer);
+    }
+  }
+  
+  function closeRules() {
+    document.getElementById('rulesModal').classList.remove('open');
+    if (bugElement) {
+      bugElement.style.display = 'block';
+      bugMoveTimer = setInterval(() => {
+        if (!bugElement) return;
+        const a = document.querySelector('.cone-area').getBoundingClientRect();
+        const x = a.left + 20 + Math.random() * (a.width - 100);
+        const y = a.top + 20 + Math.random() * (a.height - 100);
+        bugElement.style.left = x + 'px';
+        bugElement.style.top = y + 'px';
+      }, 800);
+    }
+  }
+
+  let state = {
+    score: 0, totalEarned: 0, perTap: 1, energy: 100, maxEnergy: 100,
+    passive: 0, boostUntil: 0, lastDaily: 0, startTime: Date.now(),
+    lastTapTime: 0, lastLevel: 0, lastBugType: -1,
+    upgrades: { gloves: 0, bucket: 0, truck: 0, grove: 0, factory: 0 },
+    victory: false
+  };
+
+  function load() {
+    const saved = localStorage.getItem('kedrClicker');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') state = { ...state, ...parsed };
+      } catch(e) { localStorage.removeItem('kedrClicker'); }
+    }
+  }
+  function save() {
+    localStorage.setItem('kedrClicker', JSON.stringify(state));
+  }
+
+  function fmt(n) {
+    return Math.floor(n).toLocaleString('ru-RU');
+  }
+
+  function getLevel() {
+    let lvl = 0;
+    for (let i = 0; i < LEVELS.length; i++) {
+      if (state.totalEarned >= LEVELS[i].need) lvl = i;
+    }
+    return lvl;
+  }
+
+  function spawnStars() {
+    for (let i = 0; i < 20; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.textContent = '⭐';
+      
+      const x = window.innerWidth / 2;
+      const y = window.innerHeight / 2;
+      
+      star.style.left = x + 'px';
+      star.style.top = y + 'px';
+      star.style.fontSize = (20 + Math.random() * 30) + 'px';
+      
+      document.body.appendChild(star);
+      
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 100 + Math.random() * 250;
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance - 100;
+      const rot = (Math.random() - 0.5) * 720;
+      
+      star.animate([
+        { transform: 'translate(-50%, -50%) scale(0.5) rotate(0deg)', opacity: 1 },
+        { transform: `translate(${dx}px, ${dy}px) scale(1.5) rotate(${rot}deg)`, opacity: 0 }
+      ], {
+        duration: 1000 + Math.random() * 800,
+        easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)',
+        fill: 'forwards'
+      });
+      
+      setTimeout(() => star.remove(), 2000);
+    }
+  }
+
+  function startCelebration() {
+    if (state.victory) return;
+    state.victory = true; 
+    
+    let starInterval = setInterval(spawnStars, 400);
+    spawnStars(); 
+    
+    setTimeout(() => {
+      clearInterval(starInterval);
+      state.victory = false; 
+      triggerVictory();
+    }, 5000);
+  }
+
+  function updateLevelUI() {
+    const lvl = getLevel();
+    const cur = LEVELS[lvl];
+    const next = LEVELS[lvl + 1];
+    document.getElementById('levelIcon').textContent = cur.icon;
+    document.getElementById('levelName').textContent = cur.name;
+    
+    if (!state.lastLevel) state.lastLevel = 0;
+    if (lvl > state.lastLevel) {
+      state.lastLevel = lvl;
+      spawnStars();
+    }
+    
+    if (next) {
+      const progress = (state.totalEarned - cur.need) / (next.need - cur.need);
+      document.getElementById('levelFill').style.width = Math.min(100, progress * 100) + '%';
+      document.getElementById('levelProgress').textContent = fmt(state.totalEarned) + ' / ' + fmt(next.need);
+    } else {
+      document.getElementById('levelFill').style.width = '100%';
+      document.getElementById('levelProgress').textContent = 'Максимальный уровень!';
+      
+      if (!state.victory && state.totalEarned >= 2000000) {
+        startCelebration();
+      }
+    }
+  }
+
+  function getCollectionCount() {
+    return UPGRADES.reduce((sum, up) => sum + (state.upgrades[up.id] || 0), 0);
+  }
+
+  function updateUI() {
+    document.getElementById('score').textContent = fmt(state.score);
+    document.getElementById('perTap').textContent = '+' + state.perTap + ' за тап' + (state.passive ? ' • +' + fmt(state.passive) + '/сек' : '');
+    document.getElementById('energyFill').style.width = (state.energy / state.maxEnergy * 100) + '%';
+    document.getElementById('energyText').textContent = '⚡ ' + Math.floor(state.energy) + ' / ' + state.maxEnergy;
+
+    const boostActive = Date.now() < state.boostUntil;
+    const boostBtn = document.getElementById('boostBtn');
+    if (boostActive) {
+      boostBtn.textContent = '⚡ x2 (' + Math.ceil((state.boostUntil - Date.now())/1000) + 'с)';
+      boostBtn.disabled = true;
+    } else {
+      boostBtn.textContent = '⚡ Буст x2';
+      boostBtn.disabled = false;
+    }
+    updateLevelUI();
+  }
+
+  function spawnNut(x, y, isFail) {
+    const nut = document.createElement('div');
+    nut.className = 'nut';
+    const uid = Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+    
+    const color1 = isFail ? '#444' : '#8b5a32';
+    const color2 = isFail ? '#222' : '#6b3f1e';
+    const color3 = isFail ? '#111' : '#4a2912';
+
+    nut.innerHTML = `
+      <svg viewBox="0 0 40 50" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="nutBody_${uid}" cx="35%" cy="30%" r="80%">
+            <stop offset="0%" stop-color="${color1}"/>
+            <stop offset="35%" stop-color="${color2}"/>
+            <stop offset="75%" stop-color="${color3}"/>
+            <stop offset="100%" stop-color="#1a0d04"/>
+          </radialGradient>
+        </defs>
+        <ellipse cx="22" cy="47" rx="12" ry="2.5" fill="rgba(0,0,0,0.4)"/>
+        <path d="M20 2 C 24 2, 28 6, 30 12 C 33 20, 34 30, 32 38 C 30 45, 25 48, 20 48 C 15 48, 10 45, 8 38 C 6 30, 7 20, 10 12 C 12 6, 16 2, 20 2 Z" fill="url(#nutBody_${uid})"/>
+        <ellipse cx="17" cy="10" rx="2" ry="4" fill="rgba(255,220,180,${isFail ? '0.1' : '0.5'})" transform="rotate(-15 17 10)"/>
+      </svg>
+    `;
+
+    nut.style.left = x + 'px';
+    nut.style.top = y + 'px';
+
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 80 + Math.random() * 120;
+    const dx = Math.cos(angle) * distance;
+    const dy = Math.sin(angle) * distance - 40;
+    const rot = (Math.random() - 0.5) * 720;
+
+    document.body.appendChild(nut);
+
+    nut.animate([
+      { transform: 'translate(0, 0) scale(1) rotate(0deg)', opacity: 1 },
+      { transform: `translate(${dx * 0.6}px, ${dy * 0.6}px) scale(1.15) rotate(${rot * 0.5}deg)`, opacity: 1, offset: 0.5 },
+      { transform: `translate(${dx}px, ${dy + 60}px) scale(0.6) rotate(${rot}deg)`, opacity: 0 }
+    ], {
+      duration: 900 + Math.random() * 400,
+      easing: 'cubic-bezier(0.2, 0.8, 0.4, 1)',
+      fill: 'forwards'
+    });
+
+    setTimeout(() => nut.remove(), 1400);
+  }
+
+  function spawnPenaltyText(x, y, text, color) {
+    const t = document.createElement('div');
+    t.className = 'penalty-text';
+    t.textContent = text;
+    t.style.left = x + 'px';
+    t.style.top = y + 'px';
+    if (color) t.style.color = color;
+    
+    document.body.appendChild(t);
+
+    t.animate([
+      { transform: 'translate(-50%, 0) scale(0.5)', opacity: 0 },
+      { transform: 'translate(-50%, -20px) scale(1.2)', opacity: 1, offset: 0.3 },
+      { transform: 'translate(-50%, -80px) scale(1)', opacity: 0 }
+    ], {
+      duration: 1000,
+      easing: 'ease-out',
+      fill: 'forwards'
+    });
+
+    setTimeout(() => t.remove(), 1000);
+  }
+
+  function spawnBug() {
+    if (state.victory || bugElement) return;
+    if (document.getElementById('shop').classList.contains('open')) return;
+    if (document.getElementById('rulesModal').classList.contains('open')) return;
+
+    let type;
+    do {
+      type = Math.floor(Math.random() * 3);
+    } while (type === state.lastBugType);
+    state.lastBugType = type;
+
+    bugElement = document.createElement('div');
+    bugElement.className = 'bug';
+    
+    let emoji, soundFunc;
+
+    if (type === 0) {
+      emoji = '🐞'; soundFunc = playBugSound;
+    } else if (type === 1) {
+      emoji = '🪰'; soundFunc = playFlySound;
+    } else {
+      emoji = '🕷️'; soundFunc = playSpiderSound;
+    }
+
+    bugElement.textContent = emoji;
+    
+    const area = document.querySelector('.cone-area').getBoundingClientRect();
+    let x = area.left + 20 + Math.random() * (area.width - 100);
+    let y = area.top + 20 + Math.random() * (area.height - 100);
+    
+    bugElement.style.left = x + 'px';
+    bugElement.style.top = y + 'px';
+    
+    bugElement.onclick = (e) => {
+      e.stopPropagation();
+      soundFunc();
+      const bonus = 50;
+      state.score += bonus;
+      state.totalEarned += bonus;
+      spawnPenaltyText(x + 30, y, '+' + bonus, '#4ade80');
+      updateUI();
+      save();
+      
+      clearTimeout(bugTimer);
+      clearInterval(bugMoveTimer);
+      bugElement.remove();
+      bugElement = null;
+    };
+    
+    document.body.appendChild(bugElement);
+
+    bugMoveTimer = setInterval(() => {
+      if (!bugElement) return;
+      const a = document.querySelector('.cone-area').getBoundingClientRect();
+      x = a.left + 20 + Math.random() * (a.width - 100);
+      y = a.top + 20 + Math.random() * (a.height - 100);
+      bugElement.style.left = x + 'px';
+      bugElement.style.top = y + 'px';
+    }, 800);
+
+    bugTimer = setTimeout(() => {
+      if (bugElement) {
+        playFail();
+        const penaltyPercent = 0.2;
+        const penalty = Math.floor(state.score * penaltyPercent);
+        state.score -= penalty;
+        if (state.score < 0) state.score = 0;
+        spawnPenaltyText(x + 30, y, '-20%', '#ef4444');
+        updateUI();
+        save();
+        bugElement.remove();
+        bugElement = null;
+        clearInterval(bugMoveTimer);
+      }
+    }, 3000);
+  }
+
+  function scheduleNextBug() {
+    if (state.victory) return;
+    setTimeout(() => {
+      spawnBug();
+      scheduleNextBug();
+    }, 5000 + Math.random() * 5000);
+  }
+
+  function tap(e) {
+    if (state.victory) return;
+    if (state.energy < 1.3) {
+      showToast('Нет энергии! Подожди ⚡');
+      return;
+    }
+
+    state.lastTapTime = Date.now();
+    const isFail = Math.random() < 0.02;
+    
+    if (isFail) {
+      playFail();
+      const penalty = Math.floor(state.score * 0.02);
+      state.score -= penalty;
+      if (state.score < 0) state.score = 0;
+    } else {
+      playPop();
+      const multiplier = Date.now() < state.boostUntil ? 2 : 1;
+      const gain = state.perTap * multiplier;
+      state.score += gain;
+      state.totalEarned += gain;
+    }
+    
+    state.energy -= 1.3;
+
+    const cone = document.getElementById('cone');
+    cone.style.transform = 'scale(0.9)';
+    setTimeout(() => cone.style.transform = '', 100);
+
+    const rect = cone.getBoundingClientRect();
+    let x, y;
+    if (e && (e.touches || e.changedTouches || e.clientX)) {
+      const point = e.touches?.[0] || e.changedTouches?.[0] || e;
+      x = point.clientX;
+      y = point.clientY;
+    } else {
+      x = rect.left + rect.width / 2;
+      y = rect.top + rect.height / 2;
+    }
+
+    spawnNut(x, y, isFail);
+    if (isFail) {
+      spawnPenaltyText(x, y, '-2%', '#ef4444');
+    }
+
+    updateUI();
+  }
+
+  function openShop() { 
+    renderShop(); 
+    document.getElementById('shop').classList.add('open'); 
+    if (bugElement) {
+      bugElement.style.display = 'none'; 
+      clearInterval(bugMoveTimer);
+    }
+  }
+  
+  function closeShop() { 
+    document.getElementById('shop').classList.remove('open'); 
+    if (bugElement) {
+      bugElement.style.display = 'block';
+      bugMoveTimer = setInterval(() => {
+        if (!bugElement) return;
+        const a = document.querySelector('.cone-area').getBoundingClientRect();
+        const x = a.left + 20 + Math.random() * (a.width - 100);
+        const y = a.top + 20 + Math.random() * (a.height - 100);
+        bugElement.style.left = x + 'px';
+        bugElement.style.top = y + 'px';
+      }, 800);
+    }
+  }
+
+  function getCost(up) {
+    const bought = state.upgrades[up.id] || 0;
+    return Math.floor(up.baseCost * Math.pow(1.8, bought));
+  }
+
+  function renderShop() {
+    const container = document.getElementById('shopItems');
+    container.innerHTML = '';
+    document.getElementById('collectionInfo').textContent = '📦 Коллекция: ' + getCollectionCount() + ' / ' + TOTAL_ITEMS;
+    UPGRADES.forEach(up => {
+      const bought = state.upgrades[up.id] || 0;
+      const isMaxed = bought >= up.maxLevel;
+      const cost = getCost(up);
+      const canBuy = !isMaxed && state.score >= cost;
+      const div = document.createElement('div');
+      div.className = 'item' + (isMaxed ? ' maxed' : '');
+      let buyBtn = isMaxed 
+        ? `<button class="item-buy maxed" disabled>MAX</button>` 
+        : `<button class="item-buy" ${canBuy ? '' : 'disabled'} onclick="buy('${up.id}')">🌰 ${fmt(cost)}</button>`;
+      div.innerHTML = `
+        <div class="item-icon">${up.icon}</div>
+        <div class="item-info">
+          <div class="item-name">${up.name}</div>
+          <div class="item-effect">${up.desc}</div>
+          <div class="item-level">Уровень ${bought} / ${up.maxLevel}</div>
+        </div>
+        ${buyBtn}
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function buy(id) {
+    const up = UPGRADES.find(u => u.id === id);
+    const bought = state.upgrades[up.id] || 0;
+    if (bought >= up.maxLevel) return;
+    const cost = getCost(up);
+    if (state.score < cost) return;
+    state.score -= cost;
+    state.upgrades[id] = bought + 1;
+    up.effect();
+    save();
+    updateUI();
+    renderShop();
+    if (getCollectionCount() >= TOTAL_ITEMS) {
+      showToast('🏆 Коллекция собрана!');
+      setTimeout(startCelebration, 800); 
+    } else {
+      showToast(up.icon + ' ' + up.name + ' ур. ' + (bought + 1));
+    }
+  }
+
+  function activateBoost() {
+    if (Date.now() < state.boostUntil) return;
+    state.boostUntil = Date.now() + 30000;
+    showToast('⚡ Буст x2 на 30 секунд!');
+    updateUI();
+  }
+
+  function showToast(text) {
+    const t = document.getElementById('toast');
+    t.textContent = text;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  function checkDaily() {
+    const now = Date.now();
+    const day = 24 * 60 * 60 * 1000;
+    if (state.lastDaily === 0) {
+      state.lastDaily = now;
+      save();
+      return;
+    }
+    if (now - state.lastDaily > day) {
+      state.score += 1000;
+      state.totalEarned += 1000;
+      state.lastDaily = now;
+      save();
+      showToast('🎁 Ежедневный бонус: +1000 орешков!');
+    }
+  }
+
+  function copyPromo() {
+    navigator.clipboard.writeText('КЕДРОВЫЙ20').then(() => {
+      showToast('📋 Промокод скопирован!');
+    }).catch(() => {
+      showToast('Промокод: КЕДРОВЫЙ20');
+    });
+  }
+
+  function triggerVictory() {
+    if (state.victory) return;
+    state.victory = true;
+    save();
+    closeShop();
+    if (bugElement) { bugElement.remove(); bugElement = null; }
+    if (bugTimer) clearTimeout(bugTimer);
+    if (bugMoveTimer) clearInterval(bugMoveTimer);
+    document.getElementById('vScore').textContent = fmt(state.totalEarned);
+    document.getElementById('vCollection').textContent = getCollectionCount() + ' / ' + TOTAL_ITEMS;
+    const elapsed = Date.now() - state.startTime;
+    const mins = Math.floor(elapsed / 60000);
+    const hours = Math.floor(mins / 60);
+    let timeStr;
+    if (hours > 0) timeStr = hours + 'ч ' + (mins % 60) + 'м';
+    else timeStr = mins + ' мин';
+    document.getElementById('vTime').textContent = timeStr;
+    document.getElementById('victory').classList.add('open');
+  }
+
+  function confirmReset() {
+    if (confirm('Точно сбросить весь прогресс?\nЭто действие нельзя отменить.')) {
+      resetGame();
+    }
+  }
+
+  function resetGame() {
+    localStorage.removeItem('kedrClicker');
+    localStorage.clear();
+    
+    state = {
+      score: 0, totalEarned: 0, perTap: 1, energy: 100, maxEnergy: 100,
+      passive: 0, boostUntil: 0, lastDaily: 0, startTime: Date.now(),
+      lastTapTime: 0, lastLevel: 0, lastBugType: -1,
+      upgrades: { gloves: 0, bucket: 0, truck: 0, grove: 0, factory: 0 }, victory: false
+    };
+    
+    document.getElementById('victory').classList.remove('open');
+    document.getElementById('shop').classList.remove('open');
+    document.getElementById('rulesModal').classList.remove('open');
+    
+    if (bugElement) { bugElement.remove(); bugElement = null; }
+    if (bugTimer) clearTimeout(bugTimer);
+    if (bugMoveTimer) clearInterval(bugMoveTimer);
+    
+    soundEnabled = true;
+    updateSoundBtn();
+    
+    save();
+    updateUI();
+    
+    showToast('🗑 Прогресс сброшен');
+    
+    scheduleNextBug();
+  }
+
+  setInterval(() => {
+    if (state.energy < state.maxEnergy) {
+      state.energy = Math.min(state.maxEnergy, state.energy + 1);
+    }
+    
+    if (state.passive > 0) {
+      const now = Date.now();
+      const timeSinceTap = (now - state.lastTapTime) / 1000;
+      
+      if (timeSinceTap < 5) {
+        const multiplier = 1 - (timeSinceTap / 5);
+        const gain = (state.passive / 10) * multiplier;
+        state.score += gain;
+        state.totalEarned += gain;
+      }
+    }
+    updateUI();
+  }, 100);
+
+  setInterval(save, 5000);
+
+  load();
+  checkDaily();
+  updateUI();
+
+  if (state.victory) {
+    setTimeout(triggerVictory, 500);
+  }
+
+  scheduleNextBug();
+
+  const coneEl = document.getElementById('cone');
+
+  function firstInteraction() {
+    initAudio();
+    loadSoundPref();
+    updateSoundBtn();
+    document.removeEventListener('touchstart', firstInteraction);
+    document.removeEventListener('click', firstInteraction);
+  }
+  document.addEventListener('touchstart', firstInteraction, { once: true });
+  document.addEventListener('click', firstInteraction, { once: true });
+
+  coneEl.addEventListener('touchstart', (e) => { e.preventDefault(); initAudio(); tap(e); }, { passive: false });
+  coneEl.addEventListener('click', (e) => { initAudio(); tap(e); });
+</script>
+</body>
+</html>
